@@ -9,10 +9,13 @@ use K2gl\Dsse\Signer;
 use K2gl\InToto\Exception\InvalidStatementException;
 
 /**
- * An in-toto Statement (v1): the payload of an in-toto attestation. It binds a
- * set of subjects (the artifacts the attestation is about) to a predicate of a
- * given type (the claim being made). Statements travel inside a DSSE envelope
- * whose payload type is "application/vnd.in-toto+json".
+ * An in-toto Statement: the payload of an in-toto attestation. It binds a set of
+ * subjects (the artifacts the attestation is about) to a predicate of a given
+ * type (the claim being made). Statements travel inside a DSSE envelope whose
+ * payload type is "application/vnd.in-toto+json".
+ *
+ * Both schema versions are supported (see StatementVersion): v1, the default for
+ * new statements, and the legacy v0.1 still carried by many real-world bundles.
  *
  * @see https://github.com/in-toto/attestation/blob/main/spec/v1/statement.md
  */
@@ -29,6 +32,7 @@ final class Statement
         public readonly array $subject,
         public readonly string $predicateType,
         public readonly array $predicate = [],
+        public readonly StatementVersion $version = StatementVersion::V1,
     ) {
         if ($subject === []) {
             throw new InvalidStatementException('A Statement must have at least one subject.');
@@ -77,7 +81,7 @@ final class Statement
         }
 
         $result = [
-            '_type' => self::TYPE,
+            '_type' => $this->version->value,
             'subject' => $subjects,
             'predicateType' => $this->predicateType,
         ];
@@ -109,8 +113,15 @@ final class Statement
     /** @param array<mixed> $data */
     public static function fromArray(array $data): self
     {
-        if (($data['_type'] ?? null) !== self::TYPE) {
-            throw new InvalidStatementException(sprintf('Statement "_type" must be "%s".', self::TYPE));
+        $type = $data['_type'] ?? null;
+        $version = is_string($type) ? StatementVersion::tryFrom($type) : null;
+
+        if ($version === null) {
+            throw new InvalidStatementException(sprintf(
+                'Statement "_type" must be "%s" or "%s".',
+                StatementVersion::V1->value,
+                StatementVersion::V0_1->value,
+            ));
         }
 
         $rawSubjects = $data['subject'] ?? null;
@@ -130,7 +141,12 @@ final class Statement
             throw new InvalidStatementException('Statement must contain a non-empty "predicateType".');
         }
 
-        return new self($subjects, $predicateType, self::predicateObject($data['predicate'] ?? []));
+        return new self(
+            subject: $subjects,
+            predicateType: $predicateType,
+            predicate: self::predicateObject($data['predicate'] ?? []),
+            version: $version,
+        );
     }
 
     /** @return array<string, mixed> */

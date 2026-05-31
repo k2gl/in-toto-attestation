@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0
+
+- **Statement v0.1** support alongside v1. `fromJson()` and `fromEnvelope()` now parse
+  both `https://in-toto.io/Statement/v1` and the legacy `…/v0.1` payloads carried by many
+  real-world Sigstore bundles, and `toJson()` round-trips the version it was given.
+- New **`StatementVersion`** enum, exposed as `Statement::$version`. The constructor gains
+  an optional `version` argument that defaults to v1, so existing code is unaffected.
+
 ## 1.0.0
 
 First public release. A faithful, typed implementation of the in-toto Attestation

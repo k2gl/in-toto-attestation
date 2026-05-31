@@ -1,7 +1,8 @@
 # k2gl/in-toto-attestation
 
 A faithful, typed PHP implementation of the
-[in-toto Attestation Framework](https://github.com/in-toto/attestation) **Statement v1**,
+[in-toto Attestation Framework](https://github.com/in-toto/attestation) **Statement** — both
+the current **v1** and the legacy **v0.1** still carried by many real-world bundles —
 built on [`k2gl/dsse`](https://github.com/k2gl/dsse).
 
 An in-toto attestation is a signed claim ("predicate") about one or more artifacts
@@ -60,6 +61,30 @@ $statement->subject[0]->digest;            // ['sha256' => '…']
 
 `fromEnvelope()` checks the envelope's `payloadType` and decodes the payload — always
 verify the envelope's signatures (via `k2gl/dsse`) before trusting the result.
+
+### Statement versions
+
+Real-world Sigstore bundles carry in-toto Statements in two schema versions: the current
+`v1` and the legacy `v0.1` (often wrapping a SLSA Provenance `v0.2` predicate). `fromJson()`
+and `fromEnvelope()` parse both and expose which one was decoded:
+
+```php
+use K2gl\InToto\StatementVersion;
+
+$statement = Statement::fromEnvelope($envelope);
+$statement->version === StatementVersion::V0_1;   // true for a legacy bundle
+```
+
+New statements default to `v1`. To build a `v0.1` statement, pass the version explicitly:
+
+```php
+$statement = new Statement(
+    subject: [new ResourceDescriptor(name: 'app', digest: ['sha256' => '…'])],
+    predicateType: 'https://slsa.dev/provenance/v0.2',
+    predicate: [/* … */],
+    version: StatementVersion::V0_1,
+);
+```
 
 ## Scope
 
