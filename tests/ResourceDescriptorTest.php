@@ -6,11 +6,10 @@ namespace K2gl\InToto\Tests;
 
 use K2gl\InToto\Exception\InvalidStatementException;
 use K2gl\InToto\ResourceDescriptor;
-
-use function K2gl\PHPUnitFluentAssertions\fact;
-
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+
+use function K2gl\PHPUnitFluentAssertions\fact;
 
 #[CoversClass(ResourceDescriptor::class)]
 #[CoversClass(InvalidStatementException::class)]

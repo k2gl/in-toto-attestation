@@ -1,5 +1,11 @@
 # k2gl/in-toto-attestation
 
+[![CI](https://img.shields.io/github/actions/workflow/status/k2gl/in-toto-attestation/ci.yml?branch=main&label=CI&logo=github)](https://github.com/k2gl/in-toto-attestation/actions/workflows/ci.yml)
+[![Latest Stable Version](https://img.shields.io/packagist/v/k2gl/in-toto-attestation?logo=packagist&logoColor=white)](https://packagist.org/packages/k2gl/in-toto-attestation)
+[![Total Downloads](https://img.shields.io/packagist/dt/k2gl/in-toto-attestation?logo=packagist&logoColor=white)](https://packagist.org/packages/k2gl/in-toto-attestation)
+[![PHPStan Level](https://img.shields.io/badge/PHPStan-level%209-2a5ea7?logo=php&logoColor=white)](https://phpstan.org)
+[![License](https://img.shields.io/packagist/l/k2gl/in-toto-attestation?color=yellowgreen)](https://packagist.org/packages/k2gl/in-toto-attestation)
+
 A faithful, typed PHP implementation of the
 [in-toto Attestation Framework](https://github.com/in-toto/attestation) **Statement** — both
 the current **v1** and the legacy **v0.1** still carried by many real-world bundles —

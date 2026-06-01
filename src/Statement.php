@@ -7,6 +7,7 @@ namespace K2gl\InToto;
 use K2gl\Dsse\Envelope;
 use K2gl\Dsse\Signer;
 use K2gl\InToto\Exception\InvalidStatementException;
+use JsonException;
 
 /**
  * An in-toto Statement: the payload of an in-toto attestation. It binds a set of
@@ -37,6 +38,7 @@ final class Statement
         if ($subject === []) {
             throw new InvalidStatementException('A Statement must have at least one subject.');
         }
+
         if ($predicateType === '') {
             throw new InvalidStatementException('A Statement must have a non-empty "predicateType".');
         }
@@ -62,6 +64,7 @@ final class Statement
                 self::PAYLOAD_TYPE,
             ));
         }
+
         return self::fromJson($envelope->payload);
     }
 
@@ -76,6 +79,7 @@ final class Statement
     public function toArray(): array
     {
         $subjects = [];
+
         foreach ($this->subject as $descriptor) {
             $subjects[] = $descriptor->toArray();
         }
@@ -85,9 +89,11 @@ final class Statement
             'subject' => $subjects,
             'predicateType' => $this->predicateType,
         ];
+
         if ($this->predicate !== []) {
             $result['predicate'] = $this->predicate;
         }
+
         return $result;
     }
 
@@ -101,12 +107,14 @@ final class Statement
         try {
             /** @var mixed $data */
             $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
+        } catch (JsonException $e) {
             throw new InvalidStatementException('Statement is not valid JSON: ' . $e->getMessage(), previous: $e);
         }
-        if (!is_array($data)) {
+
+        if (! is_array($data)) {
             throw new InvalidStatementException('Statement must be a JSON object.');
         }
+
         return self::fromArray($data);
     }
 
@@ -125,19 +133,22 @@ final class Statement
         }
 
         $rawSubjects = $data['subject'] ?? null;
-        if (!is_array($rawSubjects) || $rawSubjects === []) {
+
+        if (! is_array($rawSubjects) || $rawSubjects === []) {
             throw new InvalidStatementException('Statement must contain a non-empty "subject" array.');
         }
         $subjects = [];
+
         foreach ($rawSubjects as $raw) {
-            if (!is_array($raw)) {
+            if (! is_array($raw)) {
                 throw new InvalidStatementException('Each subject must be a JSON object.');
             }
             $subjects[] = ResourceDescriptor::fromArray($raw);
         }
 
         $predicateType = $data['predicateType'] ?? null;
-        if (!is_string($predicateType) || $predicateType === '') {
+
+        if (! is_string($predicateType) || $predicateType === '') {
             throw new InvalidStatementException('Statement must contain a non-empty "predicateType".');
         }
 
@@ -152,16 +163,19 @@ final class Statement
     /** @return array<string, mixed> */
     private static function predicateObject(mixed $value): array
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             throw new InvalidStatementException('"predicate" must be a JSON object.');
         }
+
         if ($value !== [] && array_is_list($value)) {
             throw new InvalidStatementException('"predicate" must be a JSON object, not an array.');
         }
         $predicate = [];
+
         foreach ($value as $key => $item) {
             $predicate[(string) $key] = $item;
         }
+
         return $predicate;
     }
 }

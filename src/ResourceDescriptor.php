@@ -40,27 +40,35 @@ final class ResourceDescriptor
     public function toArray(): array
     {
         $out = [];
+
         if ($this->name !== null) {
             $out['name'] = $this->name;
         }
+
         if ($this->uri !== null) {
             $out['uri'] = $this->uri;
         }
+
         if ($this->digest !== []) {
             $out['digest'] = $this->digest;
         }
+
         if ($this->content !== null) {
             $out['content'] = base64_encode($this->content);
         }
+
         if ($this->downloadLocation !== null) {
             $out['downloadLocation'] = $this->downloadLocation;
         }
+
         if ($this->mediaType !== null) {
             $out['mediaType'] = $this->mediaType;
         }
+
         if ($this->annotations !== null) {
             $out['annotations'] = $this->annotations;
         }
+
         return $out;
     }
 
@@ -82,12 +90,15 @@ final class ResourceDescriptor
     private static function optionalString(array $data, string $key): ?string
     {
         $value = $data[$key] ?? null;
+
         if ($value === null) {
             return null;
         }
-        if (!is_string($value)) {
+
+        if (! is_string($value)) {
             throw new InvalidStatementException(sprintf('Resource field "%s" must be a string.', $key));
         }
+
         return $value;
     }
 
@@ -97,16 +108,19 @@ final class ResourceDescriptor
         if ($value === null) {
             return [];
         }
-        if (!is_array($value)) {
+
+        if (! is_array($value)) {
             throw new InvalidStatementException('"digest" must be an object of algorithm => hex string.');
         }
         $digest = [];
+
         foreach ($value as $algorithm => $hex) {
-            if (!is_string($hex)) {
+            if (! is_string($hex)) {
                 throw new InvalidStatementException('Each "digest" value must be a string.');
             }
             $digest[(string) $algorithm] = $hex;
         }
+
         return $digest;
     }
 
@@ -116,13 +130,16 @@ final class ResourceDescriptor
         if ($value === null) {
             return null;
         }
-        if (!is_array($value)) {
+
+        if (! is_array($value)) {
             throw new InvalidStatementException(sprintf('"%s" must be an object.', $field));
         }
         $object = [];
+
         foreach ($value as $key => $item) {
             $object[(string) $key] = $item;
         }
+
         return $object;
     }
 
@@ -131,13 +148,16 @@ final class ResourceDescriptor
         if ($value === null) {
             return null;
         }
-        if (!is_string($value)) {
+
+        if (! is_string($value)) {
             throw new InvalidStatementException('"content" must be a base64 string.');
         }
         $decoded = base64_decode($value, true);
+
         if ($decoded === false) {
             throw new InvalidStatementException('"content" is not valid base64.');
         }
+
         return $decoded;
     }
 }

@@ -8,11 +8,10 @@ use K2gl\InToto\Exception\InvalidStatementException;
 use K2gl\InToto\ResourceDescriptor;
 use K2gl\InToto\Statement;
 use K2gl\InToto\StatementVersion;
-
-use function K2gl\PHPUnitFluentAssertions\fact;
-
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+
+use function K2gl\PHPUnitFluentAssertions\fact;
 
 #[CoversClass(Statement::class)]
 #[CoversClass(ResourceDescriptor::class)]
