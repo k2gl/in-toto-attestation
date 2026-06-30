@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.0
+## 1.2.1
 
 - Add a typed predicate registry: `Predicate` (interface), `PredicateRegistry`
   (predicateType → factory, with a shared `PredicateRegistry::default()`), and
