@@ -51,6 +51,20 @@ final class Statement
     }
 
     /**
+     * Resolve the predicate to a typed {@see Predicate} via the registry, or
+     * fall back to the raw predicate array when no factory is registered for
+     * this statement's predicateType. The raw {@see $predicate} property is
+     * always available regardless.
+     *
+     * @return Predicate|array<string, mixed>
+     */
+    public function predicate(?PredicateRegistry $registry = null): Predicate|array
+    {
+        return ($registry ?? PredicateRegistry::default())
+            ->resolve($this->predicateType, $this->predicate) ?? $this->predicate;
+    }
+
+    /**
      * Parse the payload of a DSSE in-toto envelope into a Statement. The
      * envelope's signatures must be verified separately (e.g. via
      * Envelope::verify()); this only checks the payload type and decodes.

@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.0
+
+- Add a typed predicate registry: `Predicate` (interface), `PredicateRegistry`
+  (predicateType → factory, with a shared `PredicateRegistry::default()`), and
+  `Statement::predicate(?PredicateRegistry)` which resolves the predicate to a typed
+  object or falls back to the raw `predicate` array. Backward compatible — the raw
+  `predicate` property is unchanged, so existing parsing keeps working.
+- `ResourceDescriptor::digestFor()` and `hasDigest()` (case-insensitive) for reading
+  and comparing subject digests.
+
 ## 1.1.0
 
 - **Statement v0.1** support alongside v1. `fromJson()` and `fromEnvelope()` now parse
