@@ -72,6 +72,20 @@ final class ResourceDescriptor
         return $out;
     }
 
+    /** The digest value for $algorithm (e.g. "sha256"), or null when absent. */
+    public function digestFor(string $algorithm): ?string
+    {
+        return $this->digest[$algorithm] ?? null;
+    }
+
+    /** Whether this descriptor's $algorithm digest equals $hexValue (case-insensitive). */
+    public function hasDigest(string $algorithm, string $hexValue): bool
+    {
+        $actual = $this->digest[$algorithm] ?? null;
+
+        return $actual !== null && hash_equals(strtolower($actual), strtolower($hexValue));
+    }
+
     /** @param array<mixed> $data */
     public static function fromArray(array $data): self
     {

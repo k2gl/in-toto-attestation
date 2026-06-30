@@ -52,6 +52,7 @@ echo $envelope->toJson();
 ### Verify and parse
 
 ```php
+use K2gl\InToto\PredicateRegistry;
 use K2gl\InToto\Statement;
 use K2gl\Dsse\Envelope;
 use K2gl\Dsse\Ed25519Verifier;
@@ -63,6 +64,8 @@ $statement = Statement::fromEnvelope($envelope);
 
 $statement->predicateType;                 // 'https://slsa.dev/provenance/v1'
 $statement->subject[0]->digest;            // ['sha256' => '…']
+$statement->subject[0]->hasDigest('sha256', $expectedHex);    // case-insensitive digest check
+$statement->predicate(PredicateRegistry::default());          // typed Predicate when registered, else the raw array
 ```
 
 `fromEnvelope()` checks the envelope's `payloadType` and decodes the payload — always
@@ -95,8 +98,10 @@ $statement = new Statement(
 ## Scope
 
 This package models the **Statement** layer (the generic envelope payload). Concrete
-predicate types — SLSA Provenance, SPDX/CycloneDX, etc. — are intentionally out of scope
-and can be carried as a typed array in `predicate`, or modelled by companion packages.
+predicate types — SLSA Provenance, SPDX/CycloneDX, etc. — are intentionally out of scope.
+They can be read as the raw `predicate` array, or modelled by companion packages that
+implement `Predicate` and register a factory in a `PredicateRegistry` (e.g.
+`k2gl/slsa-provenance`); `Statement::predicate()` then returns the typed object.
 
 ## License
 
