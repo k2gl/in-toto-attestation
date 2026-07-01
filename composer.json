@@ -1,6 +1,6 @@
 {
   "name": "k2gl/in-toto-attestation",
-  "description": "Faithful, typed PHP implementation of the in-toto Attestation Framework (Statement v1): build, sign and verify attestations over k2gl/dsse.",
+  "description": "Build, sign and verify in-toto attestation Statements (v1 and v0.1) in PHP.",
   "homepage": "https://github.com/k2gl/in-toto-attestation",
   "type": "library",
   "license": "MIT",

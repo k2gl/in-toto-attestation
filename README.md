@@ -6,10 +6,8 @@
 [![PHPStan Level](https://img.shields.io/badge/PHPStan-level%209-2a5ea7?logo=php&logoColor=white)](https://phpstan.org)
 [![License](https://img.shields.io/packagist/l/k2gl/in-toto-attestation?color=yellowgreen)](https://packagist.org/packages/k2gl/in-toto-attestation)
 
-A faithful, typed PHP implementation of the
-[in-toto Attestation Framework](https://github.com/in-toto/attestation) **Statement** — both
-the current **v1** and the legacy **v0.1** still carried by many real-world bundles —
-built on [`k2gl/dsse`](https://github.com/k2gl/dsse).
+Build, sign and verify in-toto attestation Statements in PHP, both the current v1 and the
+legacy v0.1 that many real-world bundles still carry. Signed and parsed over DSSE.
 
 An in-toto attestation is a signed claim ("predicate") about one or more artifacts
 ("subjects"). The claim is a **Statement**, carried inside a DSSE envelope with payload
