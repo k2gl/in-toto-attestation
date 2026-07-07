@@ -102,19 +102,21 @@ final class StatementTest extends TestCase
 
     public function testRejectsUnknownType(): void
     {
-        $this->expectException(InvalidStatementException::class);
-        Statement::fromJson('{"_type":"https://in-toto.io/Statement/v2","subject":[{"digest":{"sha256":"x"}}],"predicateType":"p"}');
+        // act + assert
+        fact(static fn () => Statement::fromJson('{"_type":"https://in-toto.io/Statement/v2","subject":[{"digest":{"sha256":"x"}}],"predicateType":"p"}'))
+            ->throws(InvalidStatementException::class);
     }
 
     public function testRejectsEmptySubject(): void
     {
-        $this->expectException(InvalidStatementException::class);
-        new Statement([], 'https://example.com/p');
+        // act + assert
+        fact(static fn () => new Statement([], 'https://example.com/p'))->throws(InvalidStatementException::class);
     }
 
     public function testRejectsMissingPredicateType(): void
     {
-        $this->expectException(InvalidStatementException::class);
-        Statement::fromJson('{"_type":"https://in-toto.io/Statement/v1","subject":[{"digest":{"sha256":"x"}}]}');
+        // act + assert
+        fact(static fn () => Statement::fromJson('{"_type":"https://in-toto.io/Statement/v1","subject":[{"digest":{"sha256":"x"}}]}'))
+            ->throws(InvalidStatementException::class);
     }
 }

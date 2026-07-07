@@ -71,9 +71,10 @@ final class EnvelopeIntegrationTest extends TestCase
 
     public function testFromEnvelopeRejectsWrongPayloadType(): void
     {
+        // arrange
         $envelope = new Envelope('{}', 'application/json', []);
 
-        $this->expectException(InvalidStatementException::class);
-        Statement::fromEnvelope($envelope);
+        // act + assert
+        fact(static fn () => Statement::fromEnvelope($envelope))->throws(InvalidStatementException::class);
     }
 }

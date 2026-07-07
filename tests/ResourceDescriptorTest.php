@@ -33,13 +33,14 @@ final class ResourceDescriptorTest extends TestCase
 
     public function testRequiresAtLeastOneIdentifier(): void
     {
-        $this->expectException(InvalidStatementException::class);
-        new ResourceDescriptor(name: 'name only');
+        // act + assert
+        fact(static fn () => new ResourceDescriptor(name: 'name only'))->throws(InvalidStatementException::class);
     }
 
     public function testRejectsNonStringDigestValue(): void
     {
-        $this->expectException(InvalidStatementException::class);
-        ResourceDescriptor::fromArray(['digest' => ['sha256' => 123]]);
+        // act + assert
+        fact(static fn () => ResourceDescriptor::fromArray(['digest' => ['sha256' => 123]]))
+            ->throws(InvalidStatementException::class);
     }
 }
