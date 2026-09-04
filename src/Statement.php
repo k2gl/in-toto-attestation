@@ -13,7 +13,8 @@ use JsonException;
  * An in-toto Statement: the payload of an in-toto attestation. It binds a set of
  * subjects (the artifacts the attestation is about) to a predicate of a given
  * type (the claim being made). Statements travel inside a DSSE envelope whose
- * payload type is "application/vnd.in-toto+json".
+ * payload type is "application/vnd.in-toto+json" or, since attestation spec
+ * v1.2, the predicate-specific "application/vnd.in-toto.<predicate>+json".
  *
  * Both schema versions are supported (see StatementVersion): v1, the default for
  * new statements, and the legacy v0.1 still carried by many real-world bundles.
@@ -24,6 +25,9 @@ final class Statement
 {
     public const TYPE = 'https://in-toto.io/Statement/v1';
     public const PAYLOAD_TYPE = 'application/vnd.in-toto+json';
+
+    /** The generic payload type, or a predicate-specific one such as "application/vnd.in-toto.provenance+json". */
+    private const PAYLOAD_TYPE_PATTERN = '#^application/vnd\.in-toto(\.[a-z0-9]+(-[a-z0-9]+)*)?\+json$#i';
 
     /**
      * @param list<ResourceDescriptor> $subject   at least one subject
@@ -65,15 +69,32 @@ final class Statement
     }
 
     /**
+     * Whether $payloadType is an in-toto DSSE payload type: either the generic
+     * "application/vnd.in-toto+json" or the predicate-specific
+     * "application/vnd.in-toto.<predicate>+json" form the attestation spec
+     * added in v1.2, where <predicate> is the predicate's spec filename.
+     *
+     * The media type is a hint only. What a predicate actually is comes from
+     * the authenticated "predicateType" inside the Statement, so never branch
+     * on this value alone.
+     *
+     * @see https://github.com/in-toto/attestation/blob/main/spec/v1/envelope.md
+     */
+    public static function isPayloadType(string $payloadType): bool
+    {
+        return preg_match(self::PAYLOAD_TYPE_PATTERN, $payloadType) === 1;
+    }
+
+    /**
      * Parse the payload of a DSSE in-toto envelope into a Statement. The
      * envelope's signatures must be verified separately (e.g. via
      * Envelope::verify()); this only checks the payload type and decodes.
      */
     public static function fromEnvelope(Envelope $envelope): self
     {
-        if ($envelope->payloadType !== self::PAYLOAD_TYPE) {
+        if (! self::isPayloadType($envelope->payloadType)) {
             throw new InvalidStatementException(sprintf(
-                'Envelope payloadType is "%s", expected "%s".',
+                'Envelope payloadType is "%s", expected "%s" or "application/vnd.in-toto.<predicate>+json".',
                 $envelope->payloadType,
                 self::PAYLOAD_TYPE,
             ));
