@@ -67,7 +67,12 @@ $statement->predicate(PredicateRegistry::default());          // typed Predicate
 ```
 
 `fromEnvelope()` checks the envelope's `payloadType` and decodes the payload — always
-verify the envelope's signatures (via `k2gl/dsse`) before trusting the result.
+verify the envelope's signatures (via `k2gl/dsse`) before trusting the result. Both media
+types the spec allows are accepted: the generic `application/vnd.in-toto+json` and the
+predicate-specific `application/vnd.in-toto.<predicate>+json` (e.g.
+`application/vnd.in-toto.provenance+json`) introduced in attestation spec v1.2.
+`Statement::isPayloadType()` exposes the same check. Treat the media type as a hint only:
+what the predicate really is comes from the authenticated `predicateType` in the payload.
 
 ### Statement versions
 

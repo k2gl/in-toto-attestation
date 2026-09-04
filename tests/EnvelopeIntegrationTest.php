@@ -77,4 +77,20 @@ final class EnvelopeIntegrationTest extends TestCase
         // act + assert
         fact(static fn () => Statement::fromEnvelope($envelope))->throws(InvalidStatementException::class);
     }
+
+    public function testFromEnvelopeAcceptsAPredicateSpecificPayloadType(): void
+    {
+        // arrange
+        $statement = new Statement(
+            [new ResourceDescriptor(name: 'app', digest: ['sha256' => 'abc'])],
+            'https://slsa.dev/provenance/v1',
+        );
+        $envelope = new Envelope($statement->toJson(), 'application/vnd.in-toto.provenance+json', []);
+
+        // act
+        $parsed = Statement::fromEnvelope($envelope);
+
+        // assert
+        fact($parsed->predicateType)->is('https://slsa.dev/provenance/v1');
+    }
 }

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.0
+
+- Accept the predicate-specific DSSE payload type `application/vnd.in-toto.<predicate>+json`
+  in `fromEnvelope()`, alongside the generic `application/vnd.in-toto+json`. The in-toto
+  attestation spec allows both since v1.2; envelopes using the newer form were rejected
+  before. `Statement::isPayloadType()` exposes the check for callers doing their own
+  envelope handling. Signing still emits the generic type.
+
 ## 1.2.1
 
 - Add a typed predicate registry: `Predicate` (interface), `PredicateRegistry`

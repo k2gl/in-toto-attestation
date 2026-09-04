@@ -9,6 +9,7 @@ use K2gl\InToto\ResourceDescriptor;
 use K2gl\InToto\Statement;
 use K2gl\InToto\StatementVersion;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 use function K2gl\PHPUnitFluentAssertions\fact;
@@ -43,6 +44,21 @@ final class StatementTest extends TestCase
 
         fact(str_contains($json, '"_type":"https://in-toto.io/Statement/v1"'))->true();
         fact(Statement::PAYLOAD_TYPE)->is('application/vnd.in-toto+json');
+    }
+
+    #[TestWith(['application/vnd.in-toto+json', true])]
+    #[TestWith(['application/vnd.in-toto.provenance+json', true])]
+    #[TestWith(['application/vnd.in-toto.spdx3+json', true])]
+    #[TestWith(['application/vnd.in-toto.test-result+json', true])]
+    #[TestWith(['APPLICATION/VND.IN-TOTO+JSON', true])]
+    #[TestWith(['application/json', false])]
+    #[TestWith(['application/vnd.in-toto+jsonl', false])]
+    #[TestWith(['application/vnd.in-toto.+json', false])]
+    #[TestWith(['application/vnd.in-toto.provenance', false])]
+    #[TestWith(['application/vnd.in-toto.a/b+json', false])]
+    public function testRecognisesTheInTotoPayloadTypes(string $payloadType, bool $expected): void
+    {
+        fact(Statement::isPayloadType($payloadType))->is($expected);
     }
 
     public function testParsesV01Statement(): void
