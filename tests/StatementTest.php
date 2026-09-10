@@ -42,7 +42,7 @@ final class StatementTest extends TestCase
     {
         $json = (new Statement([new ResourceDescriptor(digest: ['sha256' => 'x'])], 'https://example.com/p'))->toJson();
 
-        fact(str_contains($json, '"_type":"https://in-toto.io/Statement/v1"'))->true();
+        fact($json)->jsonPath('_type', 'https://in-toto.io/Statement/v1');
         fact(Statement::PAYLOAD_TYPE)->is('application/vnd.in-toto+json');
     }
 
@@ -97,7 +97,7 @@ final class StatementTest extends TestCase
 
         $json = $statement->toJson();
 
-        fact(str_contains($json, '"_type":"https://in-toto.io/Statement/v0.1"'))->true();
+        fact($json)->jsonPath('_type', 'https://in-toto.io/Statement/v0.1');
 
         $parsed = Statement::fromJson($json);
 

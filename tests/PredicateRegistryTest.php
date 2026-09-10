@@ -27,7 +27,7 @@ final class PredicateRegistryTest extends TestCase
         fact($registry->has(self::TYPE))->true();
 
         $resolved = $registry->resolve(self::TYPE, ['k' => 'v']);
-        fact($resolved instanceof Predicate)->true();
+        fact($resolved)->instanceOf(Predicate::class);
         fact($resolved?->toArray())->is(['k' => 'v']);
     }
 
@@ -46,7 +46,7 @@ final class PredicateRegistryTest extends TestCase
         $statement = new Statement([new ResourceDescriptor(uri: 'pkg:demo')], self::TYPE, ['k' => 'v']);
 
         $predicate = $statement->predicate($registry);
-        fact($predicate instanceof Predicate)->true();
+        fact($predicate)->instanceOf(Predicate::class);
         // The raw property remains available regardless.
         fact($statement->predicate)->is(['k' => 'v']);
     }
